@@ -1,0 +1,41 @@
+name: "CI"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # - uses: actions/cache@v4
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-
+      #       ${{ runner.os }}-
+
+      - uses: ketiko/gh-cache-action@main
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "21"
+
+      - name: Install dependencies
+        run: gradle dependencies
+
+      - name: Compile and Test
+        run: gradle test
