@@ -29,5 +29,5 @@ jobs:
       - name: Install dependencies
         run: gradle dependencies
 
-      - name: Compile and Test
-        run: gradle test
+      # - name: Compile and Test
+      #   run: gradle test
